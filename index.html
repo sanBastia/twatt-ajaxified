@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <script src="lib/sanscript.js"></script>
+    <title>Update twitter Via MyApp</title>
+  </head>
+  <body>
+    <button type="button" name="button-event" onclick="demoAjax()">MyRecentTweet</button>
+
+      <div id="div1">
+        <p id="p1">This is My Own Tweet !</p>
+      </div>
+  </body>
+
+  <script>
+  function demoAjax(){
+    myScript.request({
+      url: 'http://localhost:3000/mytimeline',
+      type: 'GET',
+      success: function(data) {
+        console.log(JSON.parse(data));
+        let parseData = JSON.parse(data).result
+
+        for(let i=0;i < parseData.length;i++){
+          var para = document.createElement("p");
+          var node = document.createTextNode(parseData[i].text);
+          para.appendChild(node);
+
+          var element = document.getElementById("div1");
+          element.appendChild(para);
+        }
+
+
+
+      },
+      fail: function() {
+        console.log("ERROR")
+      }
+    })
+  }
+
+  </script>
+</html>
