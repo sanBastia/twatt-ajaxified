@@ -2,19 +2,50 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="lib/style.css">
       <script src="lib/sanscript.js"></script>
     <title>Update twitter Via MyApp</title>
   </head>
   <body>
-    <button type="button" name="button-event" onclick="demoAjax()">MyRecentTweet</button>
 
-      <div id="div1">
-        <p id="p1">This is My Own Tweet !</p>
+    <div class="container" id="container" style="padding-top:30px">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Post A tweet !</button>
+      <button type="button" class="btn btn-default"  onclick="Tweets()">MyRecentTweet</button>
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Tweet Something</h4>
+            </div>
+              <form method="GET" onsubmit="doTweet()">
+                <div class="modal-body">
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">@</span>
+                <input type="text" name="status" placeholder="what do you think ?">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Tweet !</button>
+            </div>
+            </form>
+          </div>
+        </div>
       </div>
+        <h1 class="text-center">@irsanSebastian</h1>
+      <div id="wrap">
+      </div>
+    </div>
+
   </body>
 
   <script>
-  function demoAjax(){
+  function Tweets(){
     myScript.request({
       url: 'http://localhost:3000/mytimeline',
       type: 'GET',
@@ -23,20 +54,47 @@
         let parseData = JSON.parse(data).result
 
         for(let i=0;i < parseData.length;i++){
-          var para = document.createElement("p");
-          var node = document.createTextNode(parseData[i].text);
-          para.appendChild(node);
 
-          var element = document.getElementById("div1");
-          element.appendChild(para);
-        }
+          $('#wrap').append(`
+        <div class="row">
+      		<div class="col-sm-6">
+                  <div id="tb-testimonial" class="testimonial testimonial-default">
+                      <div class="testimonial-section">
+                          ${parseData[i].text}
+                  	</div>
+                      <div class="testimonial-desc">
+                          <img src="${parseData[i].user.profile_image_url}" alt="" />
+                          <div class="testimonial-writer">
+                          	<div class="testimonial-writer-name">  ${parseData[i].user.name}</div>
+                          	<div class="testimonial-writer-designation">Hacktiv8</div>
 
-
-
+                          </div>
+                      </div>
+                  </div>
+      		</div>
+        </div>
+        `)
+      }
       },
       fail: function() {
         console.log("ERROR")
       }
+    })
+  }
+
+  function doTweet(){
+
+    myScript.tweet({
+      url: 'http://localhost:3000/tweetsomething',
+      type: 'GET',
+      success: function(data) {
+        if(data)
+        return Tweets()
+      },
+      fail: function() {
+        console.log("ERROR")
+      }
+
     })
   }
 

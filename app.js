@@ -35,11 +35,10 @@ router.get('/myhometimeline', function (req, res) {
 
 router.get('/tweetsomething', function (req, res) {
   const status = req.query.status
-
+  console.log(status)
   client.post('statuses/update', {status: status}, function (error, tweets, response) {
     const result = JSON.parse(response.body)
-    console.log({result})
-    res.send({result})
+    res.redirect('/mytimeline')
   })
 })
 
